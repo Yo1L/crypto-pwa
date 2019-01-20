@@ -11,6 +11,9 @@
   padding: 20px 0px;
   margin-top: 40px;
 }
+.results--section h1 {
+  text-transform: uppercase;
+}
 h1 {
   text-align: center;
   font-size: 30px;

@@ -5,7 +5,8 @@ const express = require('express')
 const axios = require('axios')
 const app = express()
 
-const PORT = 5000
+const PORT = 3000
+const PRICES_EXPIRATION_IN_SECONDS = 10
 let lastPrices = {}
 
 var pusher = new Pusher({
@@ -13,16 +14,11 @@ var pusher = new Pusher({
   key: 'b8188b32624d2ddbdbae',
   secret: '4582d83c5690ac4721d3',
   cluster: 'eu',
-  encrypted: true
+  useTLS: true
 })
-
-// pusher.trigger('my-channel', 'my-event', {
-//   "message": "hello world"
-// });
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-
 
 // CORS middleware
 app.use((req, res, next) => {
@@ -39,6 +35,9 @@ app.use((req, res, next) => {
     next()
 })
 
+/**
+ * Every PRICES_EXPIRATION_IN_SECONDS seconds we get the prices
+ */
 setInterval(() => {
     // 
     axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC&tsyms=USD')
@@ -50,18 +49,13 @@ setInterval(() => {
             prices: lastPrices
         })
     })
-}, 10000)
+}, PRICES_EXPIRATION_IN_SECONDS * 1000)
 
 app.set('port', PORT)
 
-// app.post('/prices/new', (req, res) => {
-//     pusher.trigger('coin-prices', 'prices', {
-//         prices: req.body.prices
-//     })
-//     console.log('post with data' + req.body)
-//     res.sendStatus(200)
-// })
-
+/**
+ * return the last stored prices
+ */
 app.get('/prices/last', (req, res) => {
     res.send({
         prices: lastPrices
@@ -69,6 +63,16 @@ app.get('/prices/last', (req, res) => {
     console.log('get /prices/last')
 })
 
+/**
+ * index.html
+ */
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+/**
+ * Tell to the world that we are ready :)
+ */
 app.listen(PORT, () => {
     console.log("Running on port " + PORT)
 })

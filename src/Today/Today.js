@@ -14,6 +14,9 @@ class Today extends Component {
     }
 
     setPrices (data) {
+        if (navigator.onLine) {
+            localStorage.setItem('dataPrices', JSON.stringify(data))
+        }
         this.setState({ btcprice: data.prices.BTC.USD })
         this.setState({ ltcprice: data.prices.LTC.USD })
         this.setState({ ethprice: data.prices.ETH.USD })
@@ -26,10 +29,18 @@ class Today extends Component {
         });
 
         // init with the last prices
-        axios.get('/prices/last')
-        .then(response => {
-            this.setPrices(response.data)
-        })
+        if (navigator.onLine) {
+            axios.get('/prices/last')
+            .then(response => {
+                this.setPrices(response.data)
+            })
+        }
+        else {
+            let dataPrices = localStorage.getItem('dataPrices')
+            if (dataPrices) {
+                this.setPrices(JSON.parse(dataPrices))
+            }
+        }
 
         // wait for any updates
         this.channelCoinPrices = this.pusher.subscribe('coin-prices')
@@ -41,7 +52,6 @@ class Today extends Component {
     render () {
         return (
             <div className="today--section container">
-                <h2>Current Price</h2>
                 <div className="columns today--section__box">
                     <div className="column btc--section">
                         <h5>${this.state.btcprice}</h5>
