@@ -1,5 +1,5 @@
 const Path = require('path')
-const bodyParser = require('body-parse')
+const bodyParser = require('body-parser')
 const Pusher = require('pusher')
 const express = require('express')
 const app = express()
@@ -43,6 +43,7 @@ app.post('/prices/new', (req, res) => {
     pusher.trigger('coin-prices', 'prices', {
         prices: req.body.prices
     })
+    console.log('post with data' + req.body)
     res.sendStatus(200)
 })
 
