@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './Today.css'
-import axios from 'axios'
 import Pusher from 'pusher-js'
+import axios from 'axios'
 
 class Today extends Component {
     constructor () {
@@ -13,17 +13,11 @@ class Today extends Component {
         }
     }
 
-    sendPricePusher (data) {
-        axios.post('/prices/new', {
-            prices: data
-        })
-        .then(response => {
-            console.log(response)
-        })
-        .catch(error => {
-            console.error(error)
-        })
-    }
+    setPrices (data) {
+        this.setState({ btcprice: data.prices.BTC.USD })
+        this.setState({ ltcprice: data.prices.LTC.USD })
+        this.setState({ ethprice: data.prices.ETH.USD })
+    } 
 
     componentWillMount () {
         this.pusher = new Pusher('b8188b32624d2ddbdbae', {
@@ -31,31 +25,17 @@ class Today extends Component {
             forceTLS: true
         });
 
+        // init with the last prices
+        axios.get('/prices/last')
+        .then(response => {
+            this.setPrices(response.data)
+        })
+
+        // wait for any updates
         this.channelCoinPrices = this.pusher.subscribe('coin-prices')
         this.channelCoinPrices.bind('prices', (data) => {
-            this.setState({ btcprice: data.prices.BTC.USD })
-            this.setState({ ltcprice: data.prices.LTC.USD })
-            this.setState({ ethprice: data.prices.ETH.USD })
+            this.setPrices(data)
         }, this)
-
-        // axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC&tsyms=USD')
-        // .then(response => {
-        //     this.setState({ btcprice: response.data.BTC.USD })
-        //     this.setState({ ltcprice: response.data.LTC.USD })
-        //     this.setState({ ethprice: response.data.ETH.USD })
-        // })
-        // .catch(error => {
-        //     console.error(error)
-        // })
-    }
-
-    componentDidMount () {
-        setInterval(() => {
-            axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC&tsyms=USD')
-            .then(response => {
-                this.sendPricePusher(response.data)
-            })
-        }, 10000)
     }
 
     render () {

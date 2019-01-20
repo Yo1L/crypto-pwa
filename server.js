@@ -2,9 +2,11 @@ const Path = require('path')
 const bodyParser = require('body-parser')
 const Pusher = require('pusher')
 const express = require('express')
+const axios = require('axios')
 const app = express()
 
 const PORT = 5000
+let lastPrices = {}
 
 var pusher = new Pusher({
   appId: '695315',
@@ -37,14 +39,34 @@ app.use((req, res, next) => {
     next()
 })
 
+setInterval(() => {
+    // 
+    axios.get('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC&tsyms=USD')
+    .then(response => {
+        lastPrices = response.data
+
+        console.log("New prices - BTC: $" + lastPrices.BTC.USD)
+        pusher.trigger('coin-prices', 'prices', {
+            prices: lastPrices
+        })
+    })
+}, 10000)
+
 app.set('port', PORT)
 
-app.post('/prices/new', (req, res) => {
-    pusher.trigger('coin-prices', 'prices', {
-        prices: req.body.prices
+// app.post('/prices/new', (req, res) => {
+//     pusher.trigger('coin-prices', 'prices', {
+//         prices: req.body.prices
+//     })
+//     console.log('post with data' + req.body)
+//     res.sendStatus(200)
+// })
+
+app.get('/prices/last', (req, res) => {
+    res.send({
+        prices: lastPrices
     })
-    console.log('post with data' + req.body)
-    res.sendStatus(200)
+    console.log('get /prices/last')
 })
 
 app.listen(PORT, () => {
