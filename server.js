@@ -1,19 +1,20 @@
-const Path = require('path')
+const path = require('path')
+require('dotenv').config()
 const bodyParser = require('body-parser')
 const Pusher = require('pusher')
 const express = require('express')
 const axios = require('axios')
 const app = express()
 
-const PORT = 3000
+const PORT = process.env.REACT_APP_SERVER_PORT || 5000
 const PRICES_EXPIRATION_IN_SECONDS = 10
 let lastPrices = {}
 
 var pusher = new Pusher({
-  appId: '695315',
-  key: 'b8188b32624d2ddbdbae',
-  secret: '4582d83c5690ac4721d3',
-  cluster: 'eu',
+  appId: process.env.REACT_APP_PUSHER_APP_ID,
+  key: process.env.REACT_APP_PUSHER_KEY,
+  secret: process.env.REACT_APP_PUSHER_SECRET,
+  cluster: process.env.REACT_APP_PUSHER_CLUSTER,
   useTLS: true
 })
 

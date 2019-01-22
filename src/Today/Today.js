@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import './Today.css'
 import Pusher from 'pusher-js'
-import axios from 'axios'
 
 class Today extends Component {
     constructor () {
@@ -23,16 +22,17 @@ class Today extends Component {
     } 
 
     componentWillMount () {
-        this.pusher = new Pusher('b8188b32624d2ddbdbae', {
-            cluster: 'eu',
+        this.pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
+            cluster: process.env.REACT_APP_PUSHER_CLUSTER,
             forceTLS: true
         });
 
         // init with the last prices
         if (navigator.onLine) {
-            axios.get('/prices/last')
+            fetch('/prices/last')
+            .then(response => response.json())
             .then(response => {
-                this.setPrices(response.data)
+                this.setPrices(response)
             })
         }
         else {

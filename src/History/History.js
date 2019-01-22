@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import './History.css'
-import axios from 'axios'
 import moment from 'moment'
 
 class History extends Component {
@@ -16,25 +15,26 @@ class History extends Component {
     }
 
     getPrice (currency, date) {
-        return axios.get('https://min-api.cryptocompare.com/data/pricehistorical?fsym=' + currency + '&tsyms=USD&ts=' + date);
+        return fetch('https://min-api.cryptocompare.com/data/pricehistorical?fsym=' + currency + '&tsyms=USD&ts=' + date).then(response => response.json());
     }
 
     getPrices(date, stateKey) {
-        axios.all([
+        Promise.all([
             this.getPrice('BTC', date),
             this.getPrice('LTC', date),
             this.getPrice('ETH', date)
         ])
-        .then(axios.spread( (btc, ltc, eth) => {
+        .then(response => {
+            let [btc, ltc, eth] = response
             let newState = {
                 date: moment.unix(date).format("MMMM Do YYYY"),
-                btc: btc.data.BTC.USD,
-                ltc: ltc.data.LTC.USD,
-                eth: eth.data.ETH.USD
+                btc: btc.BTC.USD,
+                ltc: ltc.LTC.USD,
+                eth: eth.ETH.USD
             }
 
             this.setState({ [stateKey]: newState })
-        }))
+        })
     }
 
     componentWillMount () {
