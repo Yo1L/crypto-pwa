@@ -1,4 +1,31 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Crypto-PWA
+A tiny project to make a simple PWA with Node.js, Pusher and React.  
+
+### server.js
+server.js is the main entry point and has 2 main roles:
+ - WEB Server: for the React files (index.html, css and JS)
+ - Fetch new coin values and push them to Pusher
+
+### PWA
+
+The web app is based on React. Data and requests from server.js are cached locally.  
+Updated coin values are received from pusher.
+
+## Play with it
+
+Create an .env file in the root of this repository:
+```
+REACT_APP_PUSHER_KEY=XXXXXXXX
+REACT_APP_PUSHER_CLUSTER=XX
+REACT_APP_PUSHER_APP_ID=XXXXXXX
+REACT_APP_PUSHER_SECRET=XXXXXXXXXXX
+```
+
+Then install and start it:
+```
+npm install
+npm start
+```
 
 ## Available Scripts
 
