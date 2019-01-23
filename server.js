@@ -6,7 +6,7 @@ const express = require('express')
 const axios = require('axios')
 const app = express()
 
-const PORT = process.env.REACT_APP_SERVER_PORT || 5000
+const PORT = process.env.PORT || 5000
 const PRICES_EXPIRATION_IN_SECONDS = 10
 let lastPrices = {}
 
@@ -65,9 +65,13 @@ app.get('/prices/last', (req, res) => {
 })
 
 /**
- * index.html
+ * static files
  */
 app.use(express.static(path.join(__dirname, '/build')));
+
+/**
+ * Garbage collector
+ */
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/build/index.html'));
 });
