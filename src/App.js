@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import Trends from './Trends/Trends'
 //import History from './History/History'
-import { Navbar, Hero, Footer, Container, Content, Section, Heading } from "react-bulma-components/full";
+import { Navbar, Hero, Footer, Container, Content, Heading } from "react-bulma-components/full";
 import GitHubLogo from './GitHub-Mark-32px.png'
 
 class App extends Component {
@@ -44,7 +44,7 @@ class App extends Component {
                         <Hero.Body>
                             <Heading>Crypto PWA</Heading>
                             <Heading subtitle size={3}>
-                                a Node.js server push values through <a href="www.pusher.com">Pusher</a>
+                                a Node.js server push values through <a href="https://pusher.com">Pusher</a>
                             </Heading>
                         </Hero.Body>
                     </Hero>
