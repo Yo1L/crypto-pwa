@@ -1,5 +1,6 @@
 # Crypto-PWA
 A tiny project to make a simple PWA with Node.js, Pusher and React.  
+Here is a working sample hosted by heroku on a free dyno (you may experience some loading time if nobody has used this app recently, please be patient): https://crypto-pwa.herokuapp.com
 
 ### server.js
 server.js is the main entry point and has 2 main roles:
